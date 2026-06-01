@@ -1,465 +1,446 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { ContextGauge } from "@/components/context-gauge";
-import { KanbanBoard, TaskItem } from "@/components/kanban-board";
-import { SimulatorPanel, GSDPhase } from "@/components/simulator-panel";
-import { MetricCard, TokenAnalyticsChart } from "@/components/metric-card";
+import React, { useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import {
-  Activity,
-  FolderGit2,
-  PiggyBank,
-  CheckCircle
+  Cpu,
+  MessageSquare,
+  Sparkles,
+  TrendingUp,
+  Shield,
+  ArrowRight,
+  Star,
+  CheckCircle,
+  Plus,
+  Minus
 } from "lucide-react";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { WorkflowDesigner } from "@/components/workflow-designer";
+import { IntegrationMarquee } from "@/components/integration-marquee";
 
-const DEFAULT_TASKS: TaskItem[] = [
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+const FAQS: FAQItem[] = [
   {
-    id: "task-1",
-    title: "[NEW] Create UI Components (src/components/context-gauge.tsx)",
-    description: "Build radial token usage meter and context compression button.",
-    status: "todo",
-    fileLink: "src/components/context-gauge.tsx",
-    logs: [
-      "[INFO] Autonomous Resolver active for Task: Create UI Components",
-      "[INFO] Reading design specifications for radial token usage meter",
-      "[TOOL] call: write_to_file('src/components/context-gauge.tsx')",
-      "[SUCCESS] File written to disk successfully.",
-      "[TOOL] call: run_command('npm run build')",
-      "[SUCCESS] Build succeeded without compilation warnings.",
-      "[COMMIT] git commit -m 'feat: Add context-gauge.tsx radial token meter'"
-    ],
-    diff: `+ export function ContextGauge({
-+   contextUsage,
-+   isPruning,
-+   onPrune,
-+ }) {
-+   const maxTokens = 200000;
-+   const percentage = (contextUsage / maxTokens) * 100;
-+   return (
-+     <div className="radial-container">
-+       <svg>...</svg>
-+     </div>
-+   );
-+ }`
+    question: "What exactly is Omega Automatics?",
+    answer: "Omega Automatics is an enterprise-grade customer experience (CX) and B2B workflow automation platform. We help operations, support, and marketing teams connect their services, automate customer recovery flows, analyze reviews, and sync data in real-time without bloated development cycles."
   },
   {
-    id: "task-2",
-    title: "[MODIFY] Optimize State Management (src/app/page.tsx)",
-    description: "Connect context gauge state hook to the task simulator callback.",
-    status: "todo",
-    fileLink: "src/app/page.tsx",
-    logs: [
-      "[INFO] Autonomous Resolver active for Task: Optimize State Management",
-      "[INFO] Checking existing state variables in src/app/page.tsx",
-      "[TOOL] call: replace_file_content('src/app/page.tsx')",
-      "[SUCCESS] State connection successfully mapped.",
-      "[COMMIT] git commit -m 'refactor: Connect ContextGauge state and prune hooks'"
-    ],
-    diff: `@@ -12,5 +12,12 @@
-- const [tokens, setTokens] = useState(0);
-+ const [contextUsage, setContextUsage] = useState(145000);
-+ const handlePrune = () => {
-+   setIsPruning(true);
-+   setTimeout(() => {
-+     setContextUsage(25000);
-+     setIsPruning(false);
-+   }, 2000);
-+ };`
+    question: "How does the AI Sentiment analysis work?",
+    answer: "Our built-in LLM scanner audits incoming customer feedback, ticket logs, and reviews in real-time. It automatically classifies sentiment (positive, neutral, negative), alerts managers to urgent brand-risk ratings, and drafts contextually accurate, compliant responses."
   },
   {
-    id: "task-3",
-    title: "[NEW] Create Automated Unit Tests (tests/gauge.test.ts)",
-    description: "Verify that token reduction subtraction logic matches math model.",
-    status: "todo",
-    fileLink: "tests/gauge.test.ts",
-    logs: [
-      "[INFO] Autonomous Resolver active for Task: Create Automated Unit Tests",
-      "[TOOL] call: write_to_file('tests/gauge.test.ts')",
-      "[SUCCESS] Created tests/gauge.test.ts successfully.",
-      "[TOOL] call: run_command('npm run test')",
-      "[SUCCESS] Test execution results:\n  ✓ ContextGauge token calculation works\n  ✓ Compression resets window to 25k\nTests: 2 passed, 2 total.",
-      "[COMMIT] git commit -m 'test: Add unit tests for context window state updates'"
-    ],
-    diff: `+ import { calculatePercent } from "../src/lib/utils";
-+ 
-+ describe("Context Window calculations", () => {
-+   it("should correctly handle token values", () => {
-+     expect(calculatePercent(100000, 200000)).toBe(50);
-+   });
-+ });`
+    question: "Can we integrate with our existing CRMs and Help Desks?",
+    answer: "Yes. Omega is designed for seamless connectivity. We integrate out-of-the-box with Salesforce, HubSpot, Zendesk, Stripe, Slack, Shopify, and Jira, allowing bidirectional data synchronization."
+  },
+  {
+    question: "Is Omega HIPAA and GDPR compliant?",
+    answer: "Absolutely. Security is our priority. We maintain HIPAA compliance safeguards, strict GDPR user rights guidelines, data encryption at rest and in transit, and multi-tenant access control credentials."
   }
 ];
 
+const TRUST_LOGOS = [
+  { name: "Acme Corp", icon: "A" },
+  { name: "Globex", icon: "G" },
+  { name: "Initech", icon: "I" },
+  { name: "Umbrella", icon: "U" },
+  { name: "Hooli", icon: "H" }
+];
+
 export default function Home() {
-  const [contextUsage, setContextUsage] = useState(145000);
-  const [isPruning, setIsPruning] = useState(false);
-  const [currentPhase, setCurrentPhase] = useState<GSDPhase>("idle");
-  const [isRunningCycle, setIsRunningCycle] = useState(false);
+  const [openFAQIndex, setOpenFAQIndex] = useState<number | null>(null);
 
-  // Stats Counters
-  const [statCommits, setStatCommits] = useState(5);
-  const [statTokensSaved, setStatTokensSaved] = useState(120000);
-  const [statCostSaved, setStatCostSaved] = useState(1.80);
-
-  // Terminal Logs state
-  const [terminalLogs, setTerminalLogs] = useState<string[]>([]);
-
-  // Tasks state
-  const [tasks, setTasks] = useState<TaskItem[]>(DEFAULT_TASKS);
-
-  // Chart state
-  const [chartData] = useState([
-    { step: "Init", tokens: 5000, prunedTokens: 5000 },
-    { step: "Discuss", tokens: 20000, prunedTokens: 20000 },
-    { step: "Plan", tokens: 35000, prunedTokens: 35000 },
-    { step: "Execute", tokens: 60000, prunedTokens: 60000 },
-    { step: "Prune 1", tokens: 95000, prunedTokens: 25000 },
-    { step: "Code 1", tokens: 120000, prunedTokens: 40000 },
-    { step: "Code 2", tokens: 155000, prunedTokens: 60000 },
-    { step: "Prune 2", tokens: 180000, prunedTokens: 25000 },
-    { step: "Verify", tokens: 195000, prunedTokens: 40000 },
-  ]);
-
-  // Utility to append log with timestamp
-  const appendLog = (msg: string) => {
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    setTerminalLogs((prev) => [...prev, `[${time}] ${msg}`]);
+  const toggleFAQ = (index: number) => {
+    setOpenFAQIndex(openFAQIndex === index ? null : index);
   };
-
-  // 1. Handlers for context pruning
-  const handlePrune = () => {
-    if (isPruning) return;
-    setIsPruning(true);
-    appendLog("[SYSTEM] Context Pruning requested by user.");
-    appendLog("[TOOL] call: run_command('gsd context-compress')");
-
-    setTimeout(() => {
-      appendLog("[INFO] Summarizing execution history...");
-    }, 6000);
-
-    setTimeout(() => {
-      appendLog("[INFO] Compiling active metadata.json files...");
-    }, 12000);
-
-    setTimeout(() => {
-      appendLog("[SUCCESS] Context compressed successfully!");
-      const savedAmount = contextUsage - 25000;
-      setStatTokensSaved((prev) => prev + savedAmount);
-      // Cost savings: $0.015 per 1k tokens saved
-      setStatCostSaved((prev) => prev + (savedAmount / 1000) * 0.015);
-      setContextUsage(25000);
-      setIsPruning(false);
-      appendLog(`[SYSTEM] Context window tokens pruned: ${contextUsage.toLocaleString()} ➔ 25,000.`);
-    }, 18000);
-  };
-
-  // 2. Handlers for running a specific GSD phase manually
-  const triggerPhase = (phase: GSDPhase) => {
-    if (isRunningCycle) return;
-    setCurrentPhase(phase);
-
-    switch (phase) {
-      case "init":
-        appendLog("[SYSTEM] Initializing GSD Project Spec...");
-        appendLog("[TOOL] call: read_file('C:\\Users\\WIN10\\prd.md')");
-        setTimeout(() => {
-          appendLog("[SUCCESS] PRD parsed successfully. Found Next.js app details.");
-          setContextUsage((c) => Math.min(200000, c + 8000));
-        }, 1000);
-        break;
-
-      case "discuss":
-        appendLog("[SYSTEM] GSD Discussion phase active...");
-        appendLog("[TOOL] call: search_web('recharts Next.js hydration issues standard fixes')");
-        setTimeout(() => {
-          appendLog("[SUCCESS] Configured layout options: deep-dark mode dashboard.");
-          setContextUsage((c) => Math.min(200000, c + 12000));
-        }, 1000);
-        break;
-
-      case "plan":
-        appendLog("[SYSTEM] GSD Planning phase active...");
-        appendLog("[INFO] Formulating atomic task breakdown...");
-        setTimeout(() => {
-          appendLog("[SUCCESS] task.md and implementation_plan.md synced with backlog.");
-          setContextUsage((c) => Math.min(200000, c + 10000));
-        }, 1000);
-        break;
-
-      case "execute":
-        appendLog("[SYSTEM] GSD Execution phase active...");
-        appendLog("[TOOL] call: write_to_file('src/components/metric-card.tsx')");
-        setTimeout(() => {
-          appendLog("[SUCCESS] Compiled React code cleanly.");
-          setStatCommits((c) => c + 1);
-          setContextUsage((c) => Math.min(200000, c + 25000));
-        }, 1000);
-        break;
-
-      case "verify":
-        appendLog("[SYSTEM] GSD Verification phase active...");
-        appendLog("[TOOL] call: run_command('npm run build')");
-        setTimeout(() => {
-          appendLog("[SUCCESS] Build OK. All tests passing green.");
-          setContextUsage((c) => Math.min(200000, c + 15000));
-        }, 1000);
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  // 3. Handlers for Running Full GSD Cycle autonomously
-  const runFullCycle = () => {
-    if (isRunningCycle || currentPhase !== "idle") return;
-    setIsRunningCycle(true);
-    setTerminalLogs([]);
-    appendLog("[SYSTEM] Starting Autonomous GSD Workflow Execution.");
-
-    const runStep = (stepIdx: number) => {
-      const steps: GSDPhase[] = ["init", "discuss", "plan", "execute", "verify"];
-      if (stepIdx >= steps.length) {
-        setTimeout(() => {
-          setCurrentPhase("idle");
-          setIsRunningCycle(false);
-          appendLog("[SUCCESS] Autonomous GSD cycle finished successfully. Git clean.");
-        }, 1000);
-        return;
-      }
-
-      const active = steps[stepIdx];
-      setCurrentPhase(active);
-
-      // Logs sequence
-      if (active === "init") {
-        appendLog("[SYSTEM] Phase 1/5: INITIALIZE");
-        appendLog("[TOOL] call: write_to_file('C:\\Users\\WIN10\\implementation_plan.md')");
-        setContextUsage((c) => Math.min(200000, c + 10000));
-      } else if (active === "discuss") {
-        appendLog("[SYSTEM] Phase 2/5: DISCUSS");
-        appendLog("[TOOL] call: search_web('Next.js tailwind layout instructions')");
-        setContextUsage((c) => Math.min(200000, c + 15000));
-      } else if (active === "plan") {
-        appendLog("[SYSTEM] Phase 3/5: PLAN");
-        appendLog("[TOOL] call: write_to_file('task.md')");
-        setContextUsage((c) => Math.min(200000, c + 10000));
-      } else if (active === "execute") {
-        appendLog("[SYSTEM] Phase 4/5: EXECUTE");
-        appendLog("[TOOL] call: write_to_file('src/components/kanban-board.tsx')");
-        setStatCommits((c) => c + 1);
-        setContextUsage((c) => Math.min(200000, c + 30000));
-      } else if (active === "verify") {
-        appendLog("[SYSTEM] Phase 5/5: VERIFY");
-        appendLog("[TOOL] call: run_command('npm run build')");
-        setContextUsage((c) => Math.min(200000, c + 15000));
-      }
-
-      setTimeout(() => {
-        appendLog(`[SUCCESS] Completed phase: ${active.toUpperCase()}`);
-        runStep(stepIdx + 1);
-      }, 3000);
-    };
-
-    runStep(0);
-  };
-
-  // 4. Handlers for Kanban Board Task resolution
-  const handleStartResolve = (task: TaskItem) => {
-    // 1. Move task to in progress
-    setTasks((prev) =>
-      prev.map((t) => (t.id === task.id ? { ...t, status: "in_progress" } : t))
-    );
-    appendLog(`[SYSTEM] Initiating autonomous resolution of task: ${task.title}`);
-
-    // Print logs sequentially
-    task.logs?.forEach((log, index) => {
-      setTimeout(() => {
-        appendLog(log);
-      }, (index + 1) * 1000);
-    });
-
-    // 2. Mark task complete after timeout
-    const resolveTime = (task.logs?.length || 2) * 1000 + 500;
-    setTimeout(() => {
-      setTasks((prev) =>
-        prev.map((t) => (t.id === task.id ? { ...t, status: "done" } : t))
-      );
-      setStatCommits((c) => c + 1);
-      setContextUsage((c) => Math.min(200000, c + 20000));
-      appendLog(`[SUCCESS] Completed task "${task.title}". Git commit created.`);
-    }, resolveTime);
-  };
-
-  const handleResetAll = () => {
-    setTasks(DEFAULT_TASKS);
-    setContextUsage(145000);
-    setStatCommits(5);
-    setTerminalLogs([]);
-    setCurrentPhase("idle");
-    setIsRunningCycle(false);
-    appendLog("[SYSTEM] Board and stats reset to default states.");
-  };
-
-  // Initial greeting log
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      appendLog("[SYSTEM] Antigravity workflow monitor active.");
-      appendLog("[SYSTEM] Warning: Context tokens above 140k. Prune context (GSD) recommended to avoid latency/costs.");
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Poll live Git commit status
-  useEffect(() => {
-    const fetchGitStats = async () => {
-      try {
-        const res = await fetch("/api/git");
-        if (res.ok) {
-          const data = await res.json();
-          if (typeof data.commitCount === "number") {
-            setStatCommits(data.commitCount);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch git stats:", err);
-      }
-    };
-
-    fetchGitStats();
-    const interval = setInterval(fetchGitStats, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Listen to real-time workspace file events via SSE
-  useEffect(() => {
-    const eventSource = new EventSource("/api/workspace-events");
-
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.event === "ping") return;
-
-        const action = data.event.toUpperCase();
-        appendLog(`[SYSTEM] Workspace file ${action}: ${data.path}`);
-      } catch {
-        // ignore JSON parse errors
-      }
-    };
-
-    eventSource.onerror = (err) => {
-      console.error("Workspace event source error:", err);
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, []);
-
-  const completedTasksCount = tasks.filter((t) => t.status === "done").length;
 
   return (
-    <TooltipProvider>
-      <div className="flex-1 bg-zinc-950 text-zinc-100 min-h-screen pb-16">
-        {/* Subtle grid background */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f0f15_1px,transparent_1px),linear-gradient(to_bottom,#0f0f15_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none opacity-40" />
+    <div className="relative overflow-hidden w-full pb-20">
+      
+      {/* JSON-LD Structured Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Omega Automatics",
+            "url": "https://www.omegaautomatics.com",
+            "description": "Enterprise B2B Workflow Automation & Omni-Channel CX Support Platform.",
+            "sameAs": [
+              "https://twitter.com/omegaautomatics",
+              "https://linkedin.com/company/omegaautomatics"
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+1-800-555-OMEG",
+              "contactType": "customer service",
+              "email": "support@omega.com"
+            }
+          })
+        }}
+      />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 flex flex-col gap-6 relative">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border/20 pb-5 gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-indigo-600 flex items-center justify-center font-black text-white text-base shadow shadow-indigo-500/30">
-                  A
-                </div>
-                <h1 className="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
-                  Antigravity Workflow Playground
-                </h1>
+      {/* Global layouts are applied by RootLayout in layout.tsx */}
+
+      {/* 1. Hero Section */}
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 text-center">
+        {/* Floating Tag */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 mb-6"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          Omni-channel CX & Automation Platform
+        </motion.div>
+
+        {/* Hero Title */}
+        <motion.h1
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="text-4xl sm:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-[1.1]"
+        >
+          Connect Customer Workflows. <br />
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-violet-400 to-emerald-400">
+            Automate Brand Experience.
+          </span>
+        </motion.h1>
+
+        {/* Hero Description */}
+        <motion.p
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-zinc-400 text-base sm:text-lg max-w-2xl mx-auto mt-6 leading-relaxed"
+        >
+          Omega Automatics synchronizes customer feedback loops, AI-driven reviews escalation, and operations pipelines in a unified luxury workspace built for the next generation.
+        </motion.p>
+
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8"
+        >
+          <Link
+            href="/contact#book-demo"
+            className="btn-glow w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold text-sm text-center"
+          >
+            Request Enterprise Demo
+          </Link>
+          <Link
+            href="/pricing"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-200 hover:text-white font-semibold text-sm transition-all text-center flex items-center justify-center gap-1.5"
+          >
+            View Pricing
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </motion.div>
+
+        {/* Trust Indicators */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2, delay: 0.5 }}
+          className="mt-12 flex justify-center items-center gap-6"
+        >
+          <div className="flex -space-x-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-7 w-7 rounded-full bg-zinc-800 border-2 border-zinc-950 flex items-center justify-center text-[10px] font-bold text-zinc-400">
+                U{i}
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Learn the autonomous agentic development loop: Planning, Task Board, Context Gauge, and Verification.
+            ))}
+          </div>
+          <div className="text-left">
+            <div className="flex items-center text-amber-500 gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-3 w-3 fill-current" />
+              ))}
+              <span className="text-xs font-bold text-white ml-1.5">4.9 / 5.0 Rating</span>
+            </div>
+            <p className="text-[10px] text-zinc-500 mt-0.5">Powering CX for 40,000+ businesses globally</p>
+          </div>
+        </motion.div>
+
+        {/* Hero Visual Mockup Dashboard */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.6 }}
+          className="mt-16 bg-zinc-900/40 border border-zinc-800/80 rounded-3xl p-4 sm:p-6 backdrop-blur-md shadow-2xl relative max-w-5xl mx-auto"
+        >
+          {/* Glass Window header */}
+          <div className="flex items-center justify-between border-b border-zinc-850 pb-4 mb-6">
+            <div className="flex items-center gap-1.5">
+              <div className="h-3 w-3 rounded-full bg-red-500/80" />
+              <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+              <div className="h-3 w-3 rounded-full bg-green-500/80" />
+              <span className="text-[10px] font-mono text-zinc-500 ml-2">omega-cloud-console v2.8</span>
+            </div>
+            <div className="h-5 w-24 bg-zinc-800/40 rounded-full border border-zinc-800" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* KPI 1 */}
+            <div className="bg-zinc-950 border border-zinc-850 rounded-2xl p-4 text-left">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Reputation Score</span>
+              <div className="text-2xl font-black text-white mt-1">98.4%</div>
+              <div className="flex items-center gap-1 text-[10px] text-emerald-400 mt-1">
+                <TrendingUp className="h-3 w-3" /> +2.4% this quarter
+              </div>
+            </div>
+            {/* KPI 2 */}
+            <div className="bg-zinc-950 border border-zinc-850 rounded-2xl p-4 text-left">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Active Workflows</span>
+              <div className="text-2xl font-black text-white mt-1">1,480 / active</div>
+              <div className="flex items-center gap-1 text-[10px] text-indigo-400 mt-1">
+                <CheckCircle className="h-3 w-3" /> 100% operational uptime
+              </div>
+            </div>
+            {/* KPI 3 */}
+            <div className="bg-zinc-950 border border-zinc-850 rounded-2xl p-4 text-left">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Average Resolution Time</span>
+              <div className="text-2xl font-black text-white mt-1">1m 45s</div>
+              <div className="flex items-center gap-1 text-[10px] text-emerald-400 mt-1">
+                <TrendingUp className="h-3 w-3" /> -12s speed optimization
+              </div>
+            </div>
+          </div>
+
+          {/* Large mock graph representation */}
+          <div className="mt-4 h-48 bg-zinc-950 border border-zinc-850 rounded-2xl p-4 flex flex-col justify-between">
+            <div className="flex justify-between items-center text-[10px] text-zinc-500 font-mono">
+              <span>Customer Satisfaction (CSAT) vs SLA response time</span>
+              <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-indigo-500" /> Live Telemetry</span>
+            </div>
+            <div className="flex-grow flex items-end gap-2.5 pt-4">
+              {[40, 55, 45, 60, 75, 65, 80, 95, 85, 98].map((val, idx) => (
+                <div key={idx} className="flex-1 flex flex-col gap-1 items-center">
+                  <div
+                    className="w-full bg-gradient-to-t from-indigo-600 to-indigo-400 rounded-md transition-all duration-500"
+                    style={{ height: `${val * 1.2}px` }}
+                  />
+                  <span className="text-[8px] font-mono text-zinc-600 mt-1">Q{idx + 1}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* 2. Client Logo Cloud */}
+      <section className="border-y border-zinc-900/50 py-10 bg-zinc-950/20">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-6">
+            Trusted by operators at world-leading organizations
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-55">
+            {TRUST_LOGOS.map((logo) => (
+              <div key={logo.name} className="flex items-center gap-2 text-white font-bold text-base tracking-wider hover:opacity-100 transition-opacity">
+                <div className="h-6 w-6 rounded bg-zinc-800 flex items-center justify-center text-xs">{logo.icon}</div>
+                {logo.name}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Why Omega Automatics */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Enterprise Engine</span>
+          <h2 className="text-3xl sm:text-4xl font-black text-white mt-2 tracking-tight">
+            Why Modern Teams Trust Omega
+          </h2>
+          <p className="text-zinc-400 text-sm mt-4 leading-relaxed">
+            Legacy support systems bloat your context, slow down operations, and fail to scale. Omega uses atomic workflow segmentation to preserve speed and optimize conversions.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="glow-border bg-zinc-900/30 border border-zinc-850/65 p-6 rounded-2xl hover:border-zinc-800 transition-all duration-300">
+            <div className="h-10 w-10 bg-indigo-500/10 border border-indigo-500/20 rounded-lg flex items-center justify-center text-indigo-400 mb-4">
+              <Cpu className="h-5 w-5" />
+            </div>
+            <h3 className="text-sm font-bold text-white">Advanced Flow Architecture</h3>
+            <p className="text-xs text-zinc-500 mt-2 leading-relaxed">
+              Create trigger-based branches for customer actions. Filter ratings, route to queues, and coordinate communications instantly.
+            </p>
+          </div>
+          <div className="glow-border bg-zinc-900/30 border border-zinc-850/65 p-6 rounded-2xl hover:border-zinc-800 transition-all duration-300">
+            <div className="h-10 w-10 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 mb-4">
+              <MessageSquare className="h-5 w-5" />
+            </div>
+            <h3 className="text-sm font-bold text-white">Omnichannel Communication</h3>
+            <p className="text-xs text-zinc-500 mt-2 leading-relaxed">
+              Stream communications across Slack, SMS, Live chat, and Email. Keep historical logs clean and context tight.
+            </p>
+          </div>
+          <div className="glow-border bg-zinc-900/30 border border-zinc-850/65 p-6 rounded-2xl hover:border-zinc-800 transition-all duration-300">
+            <div className="h-10 w-10 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center justify-center text-amber-400 mb-4">
+              <Shield className="h-5 w-5" />
+            </div>
+            <h3 className="text-sm font-bold text-white">SOC 2 Level Integrity</h3>
+            <p className="text-xs text-zinc-500 mt-2 leading-relaxed">
+              Fully compliant data storage, role management, secure integrations, and end-to-end audit history tracking.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Features Bento Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Card 1: Review Management */}
+          <div className="glow-border lg:col-span-2 bg-gradient-to-br from-zinc-900/60 to-zinc-950 border border-zinc-850/65 rounded-3xl p-6 relative overflow-hidden group">
+            <div className="max-w-md">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">Reputation Builder</span>
+              <h3 className="text-xl font-bold text-white mt-1">Review & Rating Management</h3>
+              <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
+                Connect your business profiles across search engines and directories. Auto-escalate negative feedback to support managers, auto-reply to positive feedback using contextual AI models, and drive CSAT up.
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-              <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                Agent Connected
-              </span>
+            {/* Visual */}
+            <div className="mt-8 bg-zinc-950 border border-zinc-850 rounded-2xl p-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between text-[10px] text-zinc-500">
+                <span>Google Reviews Stream</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1"><span className="h-1.5 w-1.5 bg-emerald-500 rounded-full" /> Auto-Synced</span>
+              </div>
+              <div className="border border-zinc-850 bg-zinc-900/40 rounded-xl p-3 flex justify-between items-start gap-4">
+                <div>
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    Sarah Jenkins <span className="text-[9px] text-zinc-500 font-normal">via Google</span>
+                  </div>
+                  <p className="text-[10px] text-zinc-400 mt-1">&quot;The response speed from support was incredible. Solved my issue in minutes!&quot;</p>
+                </div>
+                <div className="flex text-amber-500 shrink-0">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="h-3 w-3 fill-current" />)}
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* Stats Metrics Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard
-              title="Active Agent State"
-              value={
-                currentPhase === "idle"
-                  ? "Idle"
-                  : currentPhase.toUpperCase()
-              }
-              description="Current step in the GSD cycle"
-              icon={<Activity className="h-5 w-5 text-indigo-400" />}
-            />
-            <MetricCard
-              title="Completed Tasks"
-              value={`${completedTasksCount} / ${tasks.length}`}
-              description="Backlog tasks marked DONE by agent"
-              change={completedTasksCount === 3 ? "100%" : `${Math.round((completedTasksCount / 3) * 100)}%`}
-              trend="up"
-              icon={<CheckCircle className="h-5 w-5 text-emerald-400" />}
-            />
-            <MetricCard
-              title="Git Commits Created"
-              value={statCommits}
-              description="Atomic git savepoints pushed"
-              icon={<FolderGit2 className="h-5 w-5 text-sky-400" />}
-            />
-            <MetricCard
-              title="Autonomous Savings"
-              value={`$${statCostSaved.toFixed(2)}`}
-              description={`Pruned ${statTokensSaved.toLocaleString()} tokens`}
-              change="+$0.45"
-              trend="up"
-              icon={<PiggyBank className="h-5 w-5 text-amber-400" />}
-            />
-          </div>
-
-          {/* Middle Row: Simulator & Context Gauge */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <SimulatorPanel
-                currentPhase={currentPhase}
-                terminalLogs={terminalLogs}
-                onTriggerPhase={triggerPhase}
-                onRunFullCycle={runFullCycle}
-                isRunningCycle={isRunningCycle}
-              />
-            </div>
+ 
+          {/* Card 2: AI Sentiment Classifier */}
+          <div className="glow-border bg-gradient-to-br from-zinc-900/60 to-zinc-950 border border-zinc-850/65 rounded-3xl p-6 relative overflow-hidden group flex flex-col justify-between">
             <div>
-              <ContextGauge
-                contextUsage={contextUsage}
-                isPruning={isPruning}
-                onPrune={handlePrune}
-              />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-violet-400">AI Engine</span>
+              <h3 className="text-xl font-bold text-white mt-1">Sentiment Classifier</h3>
+              <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
+                Categorize incoming queries instantly. Flag frustrated or high-churn-risk user emails to prevent SLA breaches.
+              </p>
             </div>
-          </div>
-
-          {/* Bottom Row: Kanban Board & Token Analytics Chart */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <KanbanBoard
-                tasks={tasks}
-                onStartResolve={handleStartResolve}
-                onResetAll={handleResetAll}
-              />
-            </div>
-            <div>
-              <TokenAnalyticsChart data={chartData} />
+            {/* Visual List */}
+            <div className="mt-6 flex flex-col gap-2">
+              <div className="flex items-center justify-between p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-400">
+                <span>&quot;System down, billing failed&quot;</span>
+                <span className="text-[9px] font-bold uppercase bg-red-500/20 px-2 py-0.5 rounded-full">Negative</span>
+              </div>
+              <div className="flex items-center justify-between p-2.5 bg-zinc-900/80 border border-zinc-800 rounded-xl text-xs text-zinc-400">
+                <span>&quot;How do I add a new seat?&quot;</span>
+                <span className="text-[9px] font-bold uppercase bg-zinc-850 px-2 py-0.5 rounded-full">Neutral</span>
+              </div>
+              <div className="flex items-center justify-between p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-400">
+                <span>&quot;We love the new workflows!&quot;</span>
+                <span className="text-[9px] font-bold uppercase bg-emerald-500/20 px-2 py-0.5 rounded-full">Positive</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </TooltipProvider>
+      </section>
+
+      {/* 5. Automation Workflows Interactive Sandbox */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Visual Designer</span>
+          <h2 className="text-3xl sm:text-4xl font-black text-white mt-2 tracking-tight">
+            Design Complex Customer Journeys
+          </h2>
+          <p className="text-zinc-400 text-sm mt-4 leading-relaxed">
+            Click one of the trigger paths below to simulate how Omega routes user touchpoints, processes logic steps, and fires automated multi-channel responses.
+          </p>
+        </div>
+        <WorkflowDesigner />
+      </section>
+
+      {/* 6. Partner Integrations Marquee */}
+      <section className="py-16 bg-zinc-950/40 border-y border-zinc-900/50">
+        <div className="max-w-7xl mx-auto px-4 text-center mb-8">
+          <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Connect Everywhere</span>
+          <h2 className="text-2xl sm:text-3xl font-black text-white mt-2 tracking-tight">
+            Compatible With Your Entire Stack
+          </h2>
+        </div>
+        <IntegrationMarquee />
+      </section>
+
+      {/* 7. FAQ Section */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 py-24">
+        <div className="text-center mb-16">
+          <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Frequently Asked Questions</span>
+          <h2 className="text-3xl font-black text-white mt-2 tracking-tight">Have Questions? We Have Answers.</h2>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {FAQS.map((faq, idx) => {
+            const isOpen = openFAQIndex === idx;
+            return (
+              <div
+                key={idx}
+                className="bg-zinc-900/30 border border-zinc-850 rounded-2xl overflow-hidden transition-all duration-300"
+              >
+                <button
+                  onClick={() => toggleFAQ(idx)}
+                  className="w-full px-6 py-5 flex items-center justify-between text-left text-white font-bold text-sm cursor-pointer hover:bg-zinc-900/50 transition-colors"
+                >
+                  {faq.question}
+                  {isOpen ? <Minus className="h-4 w-4 text-indigo-400 shrink-0" /> : <Plus className="h-4 w-4 text-indigo-400 shrink-0" />}
+                </button>
+                {isOpen && (
+                  <div className="px-6 pb-6 text-zinc-400 text-xs leading-relaxed border-t border-zinc-850/60 pt-4 animate-in slide-in-from-top-1 duration-150">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 8. Final CTA Section */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+        <div className="glow-border relative rounded-3xl overflow-hidden border border-indigo-500/20 bg-gradient-to-br from-indigo-950/10 via-zinc-950 to-zinc-950 p-8 sm:p-12 text-center">
+          <div className="absolute inset-0 bg-indigo-500/5 blur-3xl pointer-events-none" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">Get Started Today</span>
+          <h2 className="text-3xl sm:text-4xl font-black text-white mt-3 tracking-tight">
+            Ready to Automate Your Brand Experience?
+          </h2>
+          <p className="text-zinc-400 text-xs sm:text-sm mt-4 leading-relaxed max-w-xl mx-auto">
+            Book an enterprise consulting session with our engineering architects today. Design custom data pipelines, configure reputation triggers, and streamline CX scaling.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
+            <Link
+              href="/contact#book-demo"
+              className="btn-glow px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold text-xs text-center w-full sm:w-auto"
+            >
+              Book My Architecture Session
+            </Link>
+            <Link
+              href="/contact"
+              className="px-6 py-3 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white font-semibold text-xs transition-all text-center w-full sm:w-auto"
+            >
+              Contact Support
+            </Link>
+          </div>
+        </div>
+      </section>
+
+    </div>
   );
-} 
+}

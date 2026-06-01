@@ -311,6 +311,52 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Poll live Git commit status
+  useEffect(() => {
+    const fetchGitStats = async () => {
+      try {
+        const res = await fetch("/api/git");
+        if (res.ok) {
+          const data = await res.json();
+          if (typeof data.commitCount === "number") {
+            setStatCommits(data.commitCount);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch git stats:", err);
+      }
+    };
+
+    fetchGitStats();
+    const interval = setInterval(fetchGitStats, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Listen to real-time workspace file events via SSE
+  useEffect(() => {
+    const eventSource = new EventSource("/api/workspace-events");
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.event === "ping") return;
+
+        const action = data.event.toUpperCase();
+        appendLog(`[SYSTEM] Workspace file ${action}: ${data.path}`);
+      } catch {
+        // ignore JSON parse errors
+      }
+    };
+
+    eventSource.onerror = (err) => {
+      console.error("Workspace event source error:", err);
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
   const completedTasksCount = tasks.filter((t) => t.status === "done").length;
 
   return (

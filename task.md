@@ -8,11 +8,11 @@ This file serves as the GSD task backlog and visual Kanban board for tracking de
 
 | To Do | In Progress | Done |
 | :--- | :--- | :--- |
-| **Milestone 4 (Real-Workspace Sync)**:<br>[ ] Connect Git history to commits KPI<br>[ ] Implement chokidar file watcher<br>[ ] Render live diffs in modals | *None* | [x] **Setup**: Next.js & Tailwind configuration<br>[x] **Theme**: Dark mode & glassmorphism tokens<br>[x] **UI**: ShadCN component integrations<br>[x] **Feature**: Context window radial meter<br>[x] **Feature**: Kanban board component<br>[x] **Feature**: GSD phase simulator stepper<br>[x] **Feature**: Telecharts data visualizations<br>[x] **Verification**: Production build check<br>[x] **Audit**: Code cleanup, TypeScript verification & ESLint fix |
+| **Milestone 5 (Multiplayer & Collaboration)**:<br>[ ] persistant database for metrics<br>[ ] WebSocket synchronization<br>[ ] multiple agent profile authentication | *None* | [x] **Setup**: Next.js & Tailwind configuration<br>[x] **Theme**: Dark mode & glassmorphism tokens<br>[x] **UI**: ShadCN component integrations<br>[x] **Feature**: Context window radial meter<br>[x] **Feature**: Kanban board component<br>[x] **Feature**: GSD phase simulator stepper<br>[x] **Feature**: Telecharts data visualizations<br>[x] **Verification**: Production build check<br>[x] **Audit**: Code cleanup, TypeScript verification & ESLint fix<br>[x] **Milestone 4**: Real-Workspace Sync (Git history, file watcher, dynamic diff modals) |
 
 ---
 
-## 2. Active Task List (Milestones 1–3)
+## 2. Active Task List (Milestones 1–4)
 
 ### Wave 1: Project Setup & Style Base (Completed)
 - [x] Boot Next.js 16 app with TypeScript and App Router
@@ -43,15 +43,15 @@ This file serves as the GSD task backlog and visual Kanban board for tracking de
 - [x] Resolve React Hook cascading render warnings (`react-hooks/set-state-in-effect`)
 - [x] Clean up unused imports and variables to pass ESLint checks
 
+### Wave 4: Filesystem Sync (Milestone 4) (Completed)
+- [x] Connect commit KPI to actual local Git history using native git commands via api endpoint
+- [x] Integrate workspace file watcher (`chokidar`) to listen for file system updates
+- [x] Stream real-time file updates and terminal events to the dashboard console log
+- [x] Render real-time active file diffs dynamically inside task modals
+
 ---
 
 ## 3. Backlog (Future Milestones)
-
-### Wave 4: Filesystem Sync (Milestone 4)
-- [ ] Connect commit KPI to actual local Git history using native git commands via api endpoint
-- [ ] Integrate workspace file watcher (`chokidar`) to listen for file system updates
-- [ ] Stream real-time file updates and terminal events to the dashboard console log
-- [ ] Render real-time active file diffs dynamically inside task modals
 
 ### Wave 5: Deployment & Collaboration (Milestone 5)
 - [ ] Set up deployment configurations for Vercel

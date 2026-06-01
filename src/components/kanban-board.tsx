@@ -29,6 +29,29 @@ interface KanbanBoardProps {
 
 export function KanbanBoard({ tasks, onStartResolve, onResetAll }: KanbanBoardProps) {
   const [selectedTask, setSelectedTask] = useState<TaskItem | null>(null);
+  const [activeDiff, setActiveDiff] = useState<string>("");
+  const [isLoadingDiff, setIsLoadingDiff] = useState<boolean>(false);
+
+  const handleViewDiff = async (task: TaskItem) => {
+    setSelectedTask(task);
+    setActiveDiff(task.diff || "");
+    if (task.fileLink) {
+      setIsLoadingDiff(true);
+      try {
+        const res = await fetch(`/api/git/diff?file=${encodeURIComponent(task.fileLink)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.diff) {
+            setActiveDiff(data.diff);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch active git diff:", err);
+      } finally {
+        setIsLoadingDiff(false);
+      }
+    }
+  };
 
   const columns = [
     { id: "todo", title: "To Do", bg: "bg-zinc-500/5", border: "border-zinc-500/10", badgeBg: "bg-zinc-500/10 text-zinc-400" },
@@ -113,7 +136,7 @@ export function KanbanBoard({ tasks, onStartResolve, onResetAll }: KanbanBoardPr
                             <Button
                               variant="ghost"
                               size="xs"
-                              onClick={() => setSelectedTask(task)}
+                              onClick={() => handleViewDiff(task)}
                               className="text-[11px] text-indigo-400 hover:text-indigo-300 font-medium cursor-pointer"
                             >
                               View Code Diff
@@ -171,10 +194,13 @@ export function KanbanBoard({ tasks, onStartResolve, onResetAll }: KanbanBoardPr
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold uppercase text-zinc-400 mb-1">Git Diff Output</h3>
+              <h3 className="text-xs font-semibold uppercase text-zinc-400 mb-1 flex items-center justify-between">
+                <span>Git Diff Output</span>
+                {isLoadingDiff && <Loader2 className="h-3 w-3 animate-spin text-indigo-400" />}
+              </h3>
               <div className="bg-zinc-900 border border-zinc-800/80 rounded-lg p-3 overflow-x-auto max-h-[300px]">
                 <pre className="font-mono text-[11px] leading-tight text-zinc-300">
-                  {selectedTask?.diff?.split("\n").map((line, idx) => {
+                  {activeDiff.split("\n").map((line, idx) => {
                     let className = "text-zinc-400";
                     if (line.startsWith("+")) className = "text-emerald-400 bg-emerald-950/20";
                     else if (line.startsWith("-")) className = "text-rose-400 bg-rose-950/20";

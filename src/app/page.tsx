@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, FileDown, Shield, Clock, Wrench, Users, CheckCircle } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface ProductCard {
   title: string;
@@ -106,7 +107,12 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Value Prop */}
-            <div className="lg:col-span-7 space-y-6 text-left">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="lg:col-span-7 space-y-6 text-left"
+            >
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-blue-900/40 border border-blue-800 text-xs font-bold uppercase tracking-wider text-blue-300">
                 <Shield className="h-3.5 w-3.5" />
                 ANSI/BHMA A156.10 & AAADM Certified
@@ -121,13 +127,13 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
                 <Link
                   href="#quote"
-                  className="px-6 py-3 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs uppercase tracking-wider rounded transition-all text-center"
+                  className="px-6 py-3 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs uppercase tracking-wider rounded transition-all text-center font-semibold"
                 >
                   Request Commercial Quote
                 </Link>
                 <Link
-                  href="#products"
-                  className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold text-xs uppercase tracking-wider rounded transition-all text-center flex items-center justify-center gap-2"
+                  href="/products"
+                  className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold text-xs uppercase tracking-wider rounded transition-all text-center flex items-center justify-center gap-2 font-semibold"
                 >
                   Browse Product Catalog
                   <ArrowRight className="h-4 w-4" />
@@ -141,12 +147,17 @@ export default function Home() {
                 <div>✓ NFPA 101 Life Safety</div>
                 <div>✓ Miami-Dade Wind Load</div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Quick Consultation Request Form */}
-            <div className="lg:col-span-5 bg-slate-900/90 border border-slate-800 p-6 sm:p-8 rounded shadow-xl">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              className="lg:col-span-5 bg-slate-900/90 border border-slate-800 p-6 sm:p-8 rounded shadow-xl"
+            >
               <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-2">Request Specification Specs</h3>
-              <p className="text-[10px] text-slate-400 mb-6">Need CAD files or pricing? Complete the architectural submittal form.</p>
+              <p className="text-[10px] text-slate-400 mb-6 font-semibold">Need CAD files or pricing? Complete the architectural submittal form.</p>
               
               {submitStatus === "success" ? (
                 <div className="py-8 text-center space-y-4">
@@ -203,7 +214,7 @@ export default function Home() {
                   </button>
                 </form>
               )}
-            </div>
+            </motion.div>
 
           </div>
         </div>
@@ -221,11 +232,30 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.08
+              }
+            }
+          }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
           {PRODUCTS_LIST.map((prod) => (
-            <div
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 25 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+              }}
+              whileHover={{ y: -5, borderColor: "rgba(15, 46, 92, 0.4)", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.05)" }}
               key={prod.title}
-              className="industrial-card p-5 rounded flex flex-col justify-between"
+              className="bg-white border border-slate-200 p-5 rounded flex flex-col justify-between transition-all duration-300"
             >
               <div>
                 <span className="text-[9px] font-mono font-bold text-blue-900 bg-blue-900/5 px-2 py-0.5 rounded border border-blue-900/10">
@@ -244,11 +274,11 @@ export default function Home() {
               </div>
               <div className="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center">
                 <Link
-                  href="/resources#download"
+                  href={`/products/${prod.title.toLowerCase().includes("sliding") ? "sliding" : prod.title.toLowerCase().includes("swing") ? "swing" : prod.title.toLowerCase().includes("revolving") ? "revolving" : prod.title.toLowerCase().includes("telescopic") ? "telescopic" : prod.title.toLowerCase().includes("hermetic") ? "hermetic" : prod.title.toLowerCase().includes("hospital") ? "hospital" : prod.title.toLowerCase().includes("retail") ? "retail" : "commercial"}`}
                   className="inline-flex items-center gap-1 text-[10px] text-blue-900 font-bold uppercase hover:text-blue-800 transition-colors"
                 >
                   <FileDown className="h-3.5 w-3.5" />
-                  Specs Sheet
+                  Specs & Details
                 </Link>
                 <Link
                   href="/contact#quote"
@@ -257,9 +287,9 @@ export default function Home() {
                   Get Pricing
                 </Link>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* 3. Product Comparison Matrix */}
@@ -344,14 +374,36 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1
+                }
+              }
+            }}
+            className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6"
+          >
             {INDUSTRIES_SERVED.map((ind) => (
-              <div key={ind.name} className="p-5 border border-slate-200 rounded bg-white hover:shadow-sm transition-all duration-300">
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+                }}
+                whileHover={{ scale: 1.02, borderColor: "rgba(15, 46, 92, 0.25)" }}
+                key={ind.name}
+                className="p-5 border border-slate-200 rounded bg-white hover:shadow-sm transition-all duration-300"
+              >
                 <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">{ind.name}</h4>
                 <p className="text-[11px] text-slate-500 mt-2 leading-relaxed">{ind.desc}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
         </div>
       </section>
@@ -375,32 +427,67 @@ export default function Home() {
           </div>
 
           {/* Project Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-slate-950 border border-slate-850 p-6 rounded">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.12
+                }
+              }
+            }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+              }}
+              whileHover={{ y: -4 }}
+              className="bg-slate-950 border border-slate-850 p-6 rounded"
+            >
               <div className="text-[10px] uppercase font-bold tracking-widest text-blue-400">Healthcare</div>
               <h3 className="text-sm font-bold text-white mt-2">St. Jude Medical ICU Pavilion</h3>
               <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
                 Installed 18 hermetically sealed manual breakout ICU sliders (Series 08-ICU) and low-energy automatic swing operators to automate corridor entrances.
               </p>
               <div className="mt-4 text-[10px] text-slate-500 font-bold font-mono">Completed: 2025 | Spec: Division 08 42 43</div>
-            </div>
-            <div className="bg-slate-950 border border-slate-850 p-6 rounded">
+            </motion.div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+              }}
+              whileHover={{ y: -4 }}
+              className="bg-slate-950 border border-slate-850 p-6 rounded"
+            >
               <div className="text-[10px] uppercase font-bold tracking-widest text-blue-400">Aviation</div>
               <h3 className="text-sm font-bold text-white mt-2">Metro International Airport Terminal 3</h3>
               <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
                 Rebuilt the baggage claim entrance using 8 high-traffic bi-parting sliding doors (Series 2000) and 4 heavy-duty three-wing automatic revolving doors.
               </p>
               <div className="mt-4 text-[10px] text-slate-500 font-bold font-mono">Completed: 2026 | Spec: Division 08 42 33</div>
-            </div>
-            <div className="bg-slate-950 border border-slate-850 p-6 rounded">
+            </motion.div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+              }}
+              whileHover={{ y: -4 }}
+              className="bg-slate-950 border border-slate-850 p-6 rounded"
+            >
               <div className="text-[10px] uppercase font-bold tracking-widest text-blue-400">Corporate</div>
               <h3 className="text-sm font-bold text-white mt-2">Dominion Financial Tower Lobby</h3>
               <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
                 Designed a custom 14-foot architectural glass facade vestibule integrated with automatic telescopic glass sliding systems and access controllers.
               </p>
               <div className="mt-4 text-[10px] text-slate-500 font-bold font-mono">Completed: 2024 | Spec: Division 08 42 36</div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 

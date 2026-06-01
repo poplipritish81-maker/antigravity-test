@@ -235,6 +235,12 @@ export function Navbar() {
           <Link href="/about" className="text-xs uppercase tracking-wider font-bold text-slate-600 hover:text-blue-900 transition-colors">
             About
           </Link>
+          <Link href="/case-studies" className="text-xs uppercase tracking-wider font-bold text-slate-600 hover:text-blue-900 transition-colors">
+            Case Studies
+          </Link>
+          <Link href="/support" className="text-xs uppercase tracking-wider font-bold text-slate-600 hover:text-blue-900 transition-colors">
+            Support
+          </Link>
         </nav>
 
         {/* Desktop CTA Action buttons */}
@@ -312,6 +318,12 @@ export function Navbar() {
               </Link>
               <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-slate-600 hover:text-blue-900">
                 About
+              </Link>
+              <Link href="/case-studies" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-slate-600 hover:text-blue-900">
+                Case Studies
+              </Link>
+              <Link href="/support" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-slate-600 hover:text-blue-900">
+                Support
               </Link>
             </div>
 

@@ -1,78 +1,95 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
-import { Wrench, Rocket, GraduationCap, Headphones, ArrowRight, ShieldCheck } from "lucide-react";
-import type { Metadata } from "next";
+import { Wrench, Clock, CheckCircle2, Phone } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Professional Services",
-  description: "Accelerate your setup with Omega Automatics Professional Services. Bespoke API integrations, custom onboarding, and SLA-backed support.",
-};
+interface ServiceItem {
+  title: string;
+  desc: string;
+  specs: string[];
+}
 
-const SERVICES = [
+const SERVICES_LIST: ServiceItem[] = [
   {
-    title: "Bespoke API Integrations",
-    desc: "Our senior solutions engineers design custom data bridges connecting your proprietary internal databases and legacy CRMs straight into Omega pipelines.",
-    icon: <Wrench className="h-6 w-6 text-indigo-400" />,
-    specs: ["Custom OAuth flows", "Real-time webhook sync", "High-throughput database piping", "Enterprise security audits"]
+    title: "AAADM Certified Installation",
+    desc: "Our installers ensure automatic doors are mounted, glazed, and calibrated to meet ANSI standards. We handle the complete setup including structural framing and safety sensor configurations.",
+    specs: [
+      "Rigid mounting of headers and sliding tracks",
+      "Storefront glass glazing and door panel alignment",
+      "Wiring of activation presence sensors and backup systems",
+      "Mandatory AAADM commissioning checklist execution"
+    ]
   },
   {
-    title: "CX Strategy & Implementation",
-    desc: "Accelerate your transition. We audit your existing support workflows, design efficient response rules, and map automation triggers to reduce response times by 80%.",
-    icon: <Rocket className="h-6 w-6 text-emerald-400" />,
-    specs: ["SLA target mapping", "Automated escalation routing", "AI response drafting templates", "Reputation score strategies"]
+    title: "Preventive Maintenance Contracts",
+    desc: "Planned maintenance contracts significantly reduce unexpected entrance failures and extend structural service life. We custom-tailor maintenance intervals to your annual cycle counts.",
+    specs: [
+      "Full mechanical inspect of rollers, tracks, and pivots",
+      "Sensor detection field calibration under ANSI criteria",
+      "Belt tension adjustments and backup battery checks",
+      "Complete lubrication of gears and structural alignments"
+    ]
   },
   {
-    title: "Dedicated TAM & SLA Support",
-    desc: "Get priority access. Enterprise accounts get a dedicated Technical Account Manager (TAM) and guaranteed 15-minute response times under formal SLAs.",
-    icon: <Headphones className="h-6 w-6 text-amber-400" />,
-    specs: ["24/7/365 priority phone/Slack access", "Quarterly business reviews", "Incident response monitoring", "Root-cause analysis logs"]
+    title: "AAADM Compliance Auditing",
+    desc: "Federal regulations and liability standards require pedestrian doors to be inspected annually by a certified AAADM tester. We execute checks and issue compliance decals.",
+    specs: [
+      "Validation of safety sensor detection zones",
+      "Measurement of opening/closing force and delay timings",
+      "Egress breakout force testing and verify safety decal signage",
+      "Official inspection report logs filed for building records"
+    ]
   },
   {
-    title: "Enterprise Training Workshops",
-    desc: "Equip your operations and support staff. We host custom training sessions, workspace configuration walkthroughs, and custom handbook creation.",
-    icon: <GraduationCap className="h-6 w-6 text-pink-400" />,
-    specs: ["Live instructor-led cohorts", "Recorded custom tutorials", "Workflows playground exercises", "Operations certifications"]
+    title: "24/7 Commercial Emergency Dispatch",
+    desc: "A jammed entrance locks customers out and violates fire codes. Omega offers round-the-clock emergency dispatch with technicians carrying standard manufacturer replacement parts.",
+    specs: [
+      "Guaranteed 2-hour dispatch for contract clients",
+      "Technicians carry certified spare locks, belts, and sensors",
+      "Mechanical breakout diagnostics and frame repairs",
+      "Emergency securement in cases of structural facility damage"
+    ]
   }
 ];
 
 export default function ServicesPage() {
   return (
-    <div className="relative overflow-hidden w-full py-16">
+    <div className="w-full bg-white text-slate-900 min-h-screen">
       
-      {/* Decorative Glow */}
-      <div className="absolute top-1/4 left-0 h-96 w-96 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none" />
-
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Services & Support</span>
-          <h1 className="text-3xl sm:text-5xl font-black text-white mt-2 tracking-tight">
-            Accelerate Integration, Maximize Value
-          </h1>
-          <p className="text-zinc-400 text-sm mt-4 leading-relaxed">
-            Ensure custom integrations, optimized workflow architectures, and priority support. Partner with our dedicated systems engineers to configure a platform tailored to your exact business needs.
+      {/* Banner */}
+      <section className="bg-slate-900 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left space-y-4">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-400">Technical Support</span>
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight uppercase">Installation & Service Programs</h1>
+          <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+            Ensure opening longevity, occupant safety, and strict building code compliance with our AAADM-certified services, preventative contracts, and emergency field fleet.
           </p>
         </div>
+      </section>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-          {SERVICES.map((srv) => (
-            <div key={srv.title} className="bg-zinc-900/30 border border-zinc-850 p-6 rounded-3xl flex flex-col justify-between hover:border-zinc-800 transition-all duration-300">
+      {/* Main Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          {SERVICES_LIST.map((srv) => (
+            <div
+              key={srv.title}
+              className="border border-slate-200 p-6 sm:p-8 rounded bg-white shadow-sm flex flex-col justify-between hover:border-blue-900/30 transition-all duration-300"
+            >
               <div>
-                <div className="h-12 w-12 bg-zinc-950 rounded-xl flex items-center justify-center mb-5 border border-zinc-850 shadow-inner">
-                  {srv.icon}
+                <div className="h-10 w-10 bg-slate-100 rounded flex items-center justify-center text-blue-900 mb-5">
+                  <Wrench className="h-5 w-5" />
                 </div>
-                <h3 className="text-base font-bold text-white">{srv.title}</h3>
-                <p className="text-xs text-zinc-500 mt-2.5 leading-relaxed">{srv.desc}</p>
+                <h2 className="text-lg font-bold text-slate-900">{srv.title}</h2>
+                <p className="text-xs text-slate-500 mt-2.5 leading-relaxed">{srv.desc}</p>
               </div>
 
-              <div className="border-t border-zinc-850/60 mt-6 pt-5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block mb-3">Service Deliverables</span>
+              <div className="border-t border-slate-100 mt-6 pt-5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-3">Service Deliverables</span>
                 <ul className="space-y-2">
                   {srv.specs.map((spec) => (
-                    <li key={spec} className="flex items-center gap-2 text-xs text-zinc-400">
-                      <ShieldCheck className="h-3.5 w-3.5 text-indigo-500 shrink-0" />
+                    <li key={spec} className="flex items-start gap-2 text-[11px] text-slate-600 font-semibold leading-normal">
+                      <CheckCircle2 className="h-4 w-4 text-blue-900 shrink-0 mt-0.5" />
                       {spec}
                     </li>
                   ))}
@@ -82,25 +99,32 @@ export default function ServicesPage() {
           ))}
         </div>
 
-        {/* Call to Action banner */}
-        <div className="rounded-3xl border border-zinc-850 bg-gradient-to-br from-zinc-900/40 to-zinc-950 p-8 sm:p-12 text-center relative overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-56 w-56 bg-indigo-500/5 blur-3xl pointer-events-none" />
-          <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight">Need a Custom Solutions Architecture?</h2>
-          <p className="text-zinc-400 text-xs sm:text-sm mt-3 max-w-lg mx-auto leading-relaxed">
-            Our enterprise architects are available to map custom data schemas, plan pipeline logic, and outline transition timelines.
+        {/* Dispatch banner */}
+        <div className="border border-slate-200 rounded p-6 sm:p-10 bg-slate-50 text-center">
+          <Clock className="h-10 w-10 text-blue-900 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight">Facing an Inoperable Egress Right Now?</h2>
+          <p className="text-slate-500 text-xs mt-3 max-w-xl mx-auto leading-relaxed">
+            Omega operates 24/7 service coordinators. Call our emergency dispatch line to route a certified service truck immediately.
           </p>
-          <div className="mt-8 flex justify-center">
+          <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              href="/contact#book-demo"
-              className="inline-flex items-center gap-1.5 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md transition-all cursor-pointer"
+              href="/contact"
+              className="px-6 py-3 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs uppercase tracking-wider rounded transition-all shadow-sm flex items-center gap-2"
             >
-              Book an Advisory Session
-              <ArrowRight className="h-3.5 w-3.5" />
+              <Phone className="h-4 w-4" />
+              Call 1-800-555-OMEG
+            </Link>
+            <Link
+              href="/contact#quote"
+              className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold text-xs uppercase tracking-wider rounded transition-all"
+            >
+              Request Service Quote
             </Link>
           </div>
         </div>
 
-      </div>
+      </section>
+
     </div>
   );
 }

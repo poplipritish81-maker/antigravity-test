@@ -1,94 +1,117 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
-import { Cpu, ShoppingCart, ShieldAlert, BadgeDollarSign, CheckCircle2, ArrowRight } from "lucide-react";
-import type { Metadata } from "next";
+import { CheckCircle2, ArrowRight, ShieldCheck, Building } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Industries We Serve | Omega Automatics",
-  description: "Learn how Omega Automatics builds custom B2B automation and omnichannel CX solutions for SaaS, E-commerce, Healthcare, and Finance.",
-};
+interface IndustryItem {
+  id: string;
+  title: string;
+  desc: string;
+  standard: string;
+  bullets: string[];
+}
 
-const INDUSTRIES = [
-  {
-    id: "saas",
-    title: "B2B SaaS & Tech",
-    desc: "Accelerate user activation and drive self-serve conversions. Connect sign-up events directly to onboarding campaigns, route bugs to engineering teams in Jira, and auto-engage low-activity accounts to prevent churn.",
-    kpi: "38% Reduction in Churn Rate",
-    icon: <Cpu className="h-6 w-6 text-indigo-400" />,
-    bullets: ["Auto-route bugs to developer backlogs", "In-app support and Slack notifications", "Sentiment alerts for VIP enterprise trials"]
-  },
-  {
-    id: "ecommerce",
-    title: "Retail & E-commerce",
-    desc: "Turn transactional events into marketing opportunities. Recover abandoned carts with instant SMS promotions, send shipping updates directly to WhatsApp, and collect positive ratings post-delivery automatically.",
-    kpi: "18% Spike in Cart Recovery",
-    icon: <ShoppingCart className="h-6 w-6 text-emerald-400" />,
-    bullets: ["Instant SMS and WhatsApp cart alerts", "Post-purchase automatic review loops", "Seamless Shopify/Magento product sync"]
-  },
+const INDUSTRIES_LIST: IndustryItem[] = [
   {
     id: "healthcare",
-    title: "Healthcare Access",
-    desc: "HIPAA-compliant B2B workflow systems. Schedule client onboarding, distribute check-up reminders securely, gather patient accessibility ratings, and automate administrative follow-ups safely.",
-    kpi: "45% Lower Administrative Load",
-    icon: <ShieldAlert className="h-6 w-6 text-amber-400" />,
-    bullets: ["End-to-end data encryption", "Secure scheduling integration", "Patient satisfaction feedback audits"]
+    title: "Healthcare & Hospitals",
+    desc: "Surgical corridors, cleanroom laboratories, and patient ICU zones demand strict infection control and touchless activation. We engineer hermetically sealed pressure sliders and manual breakout patient doors that ensure ADA barrier-free access and smoke-containment compliance.",
+    standard: "NFPA 105 & Joint Commission Compliant",
+    bullets: [
+      "ICU manual breakout doors for immediate patient bed transfers",
+      "Touchless wave-to-open sensors to preserve surgical hygiene",
+      "Hermetically sealed gaskets to maintain laboratory room pressure"
+    ]
   },
   {
-    id: "finance",
-    title: "Financial Services",
-    desc: "Secure automation for onboarding, compliance monitoring, and client care. Automatically flag VIP clients needing human assistance and orchestrate transactional advisory reports safely.",
-    kpi: "99.99% Compliance Security Uptime",
-    icon: <BadgeDollarSign className="h-6 w-6 text-sky-400" />,
-    bullets: ["Strict multi-tenant security controls", "Automated client onboarding alerts", "Audit trails for all workflow executions"]
+    id: "aviation",
+    title: "Aviation & Airports",
+    desc: "Airport baggage claims, security check gates, and terminal entrances operate continuously under severe load. Our automatic revolving doors and telescopic sliders are engineered with structural tracking and smart sensors to manage heavy pedestrian surges safely.",
+    standard: "ANSI A156.10 High-Traffic Tested",
+    bullets: [
+      "Multi-point presence safety sensors prevent passenger entrapment",
+      "Continuous cycle-tested sliding doors with heavy-duty carriage rollers",
+      "Panic breakout revolving wings that fold flat during emergency evacuation"
+    ]
+  },
+  {
+    id: "hospitality",
+    title: "Hospitality & Hotels",
+    desc: "First impressions are vital. We design grand architectural automatic revolving entrances and luxury glass storefront vestibules that enhance lobby acoustics, eliminate exterior street drafts, and reduce building thermal losses.",
+    standard: "Custom Architectural Finishes Available",
+    bullets: [
+      "Power-assist revolving door configurations with speed control limits",
+      "Custom anodized, brass, or corporate color cladding finishes",
+      "Narrow-profile glass joints maximizing interior lobby natural light"
+    ]
+  },
+  {
+    id: "retail",
+    title: "Retail & Shopping Centers",
+    desc: "Retail entrances must endure constant cart collisions, seasonal weather gusts, and continuous traffic. Omega automatic sliding storefront packages combine cost-effective building draft mitigation with robust steel bumper guards.",
+    standard: "ADA Compliant Entryways",
+    bullets: [
+      "Integrated structural buffer rails to absorb shopping cart bumps",
+      "High-speed drive operators that close quickly to block wind gusts",
+      "Bi-parting entrances offering wide opening clearances for shoppers"
+    ]
+  },
+  {
+    id: "corporate",
+    title: "Corporate & Government Offices",
+    desc: "Streamline secure employee routing with automated entrances integrated into security badges, card readers, and fire alarm networks. We construct complete exterior facade vestibules that maintain clean architectural lines.",
+    standard: "Security Access Control Ready",
+    bullets: [
+      "Dry-glaze structural glass panels engineered for wind loads",
+      "Bidirectional interface with Okta, SAML, and physical card badges",
+      "Fail-safe automatic lockouts during emergency building alerts"
+    ]
   }
 ];
 
 export default function IndustriesPage() {
   return (
-    <div className="relative overflow-hidden w-full py-16">
+    <div className="w-full bg-white text-slate-900 min-h-screen">
       
-      {/* Background decoration */}
-      <div className="absolute top-1/4 left-1/4 h-80 w-80 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none" />
-
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Target Verticals</span>
-          <h1 className="text-3xl sm:text-5xl font-black text-white mt-2 tracking-tight">
-            Tailored for High-Growth Verticals
-          </h1>
-          <p className="text-zinc-400 text-sm mt-4 leading-relaxed">
-            Every industry has unique workflow pipelines and compliance parameters. Omega provides pre-configured templates and custom integrations optimized for your industry&apos;s standards.
+      {/* Banner */}
+      <section className="bg-slate-900 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left space-y-4">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-400">Sectors We Support</span>
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight uppercase">Entrance Automation Industries</h1>
+          <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+            Omega Automatics delivers sector-specific entrance packages engineered to meet local building codes, HVAC requirements, and security criteria.
           </p>
         </div>
+      </section>
 
-        {/* Industries Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-          {INDUSTRIES.map((ind) => (
+      {/* Main Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          {INDUSTRIES_LIST.map((ind) => (
             <div
               key={ind.id}
               id={ind.id}
-              className="bg-zinc-900/30 border border-zinc-850 p-6 rounded-3xl flex flex-col justify-between hover:border-zinc-800 transition-all duration-300 relative overflow-hidden group"
+              className="border border-slate-200 p-6 sm:p-8 rounded bg-white shadow-sm flex flex-col justify-between hover:border-blue-900/30 transition-all duration-300"
             >
               <div>
-                <div className="flex justify-between items-start">
-                  <div className="h-11 w-11 bg-zinc-950 rounded-xl flex items-center justify-center border border-zinc-850">
-                    {ind.icon}
+                <div className="flex justify-between items-start gap-4">
+                  <div className="h-10 w-10 bg-slate-100 rounded flex items-center justify-center text-blue-900">
+                    <Building className="h-5 w-5" />
                   </div>
-                  <span className="text-[9px] font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full uppercase">
-                    {ind.kpi}
+                  <span className="text-[9px] font-bold text-blue-900 bg-blue-900/5 border border-blue-900/10 px-2 py-0.5 rounded">
+                    {ind.standard}
                   </span>
                 </div>
-                <h2 className="text-base font-bold text-white mt-5">{ind.title}</h2>
-                <p className="text-xs text-zinc-500 mt-2.5 leading-relaxed">{ind.desc}</p>
+                <h2 className="text-lg font-bold text-slate-900 mt-5">{ind.title}</h2>
+                <p className="text-xs text-slate-500 mt-2.5 leading-relaxed">{ind.desc}</p>
               </div>
 
-              <div className="border-t border-zinc-850/60 mt-6 pt-5">
+              <div className="border-t border-slate-100 mt-6 pt-5">
                 <ul className="space-y-2">
                   {ind.bullets.map((bullet) => (
-                    <li key={bullet} className="flex items-center gap-2 text-xs text-zinc-400">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-indigo-500 shrink-0" />
+                    <li key={bullet} className="flex items-start gap-2 text-[11px] text-slate-600 font-semibold leading-normal">
+                      <CheckCircle2 className="h-4 w-4 text-blue-900 shrink-0 mt-0.5" />
                       {bullet}
                     </li>
                   ))}
@@ -98,25 +121,26 @@ export default function IndustriesPage() {
           ))}
         </div>
 
-        {/* CTA Banner */}
-        <div className="rounded-3xl border border-zinc-850 bg-gradient-to-br from-zinc-900/40 to-zinc-950 p-8 sm:p-12 text-center relative overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-56 w-56 bg-indigo-500/5 blur-3xl pointer-events-none" />
-          <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">Need a Custom Industry Configuration?</h2>
-          <p className="text-zinc-400 text-xs sm:text-sm mt-3 max-w-lg mx-auto leading-relaxed">
-            Connect with our systems integration engineers to outline custom schema designs, data storage parameters, and compliant security safeguards.
+        {/* Custom requirements */}
+        <div className="border border-slate-200 rounded p-6 sm:p-10 bg-slate-50 text-center">
+          <ShieldCheck className="h-10 w-10 text-blue-900 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight">Need a Custom Industry Entrance Setup?</h2>
+          <p className="text-slate-500 text-xs mt-3 max-w-xl mx-auto leading-relaxed">
+            Our estimating engineers consult directly with architectural firms and general contractors to customize structural dimensions, glass thermal values, and safety compliance setups.
           </p>
-          <div className="mt-8">
+          <div className="mt-6">
             <Link
-              href="/contact#book-demo"
-              className="inline-flex items-center gap-1.5 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md transition-all cursor-pointer"
+              href="/contact#quote"
+              className="inline-flex items-center gap-1.5 px-6 py-3 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs uppercase tracking-wider rounded transition-all shadow-sm"
             >
-              Consult with our Solutions Team
+              Consult with estimation team
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
 
-      </div>
+      </section>
+
     </div>
   );
 }

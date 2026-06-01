@@ -1,123 +1,148 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, Compass, Zap, ArrowRight } from "lucide-react";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "About Us",
-  description: "Learn about the mission, values, and leadership behind Omega Automatics, the leading B2B automation and omnichannel CX platform.",
-};
+import { ShieldCheck, Compass, Building, ArrowRight } from "lucide-react";
 
 const LEADERS = [
   {
-    name: "Alistair Vance",
-    role: "Co-Founder & CEO",
-    bio: "Former VP of Product at Salesforce and Intercom. Obsessed with B2B optimization and clean, atomic operations.",
-    avatar: "AV"
+    name: "Robert Vance",
+    role: "President & CEO",
+    bio: "Over 25 years of manufacturing operations experience. Formerly Director of Openings at Ingersoll Rand. Champion of robust engineering standards.",
+    avatar: "RV"
   },
   {
-    name: "Dr. Evelyn Ross",
-    role: "Chief Technology Officer",
-    bio: "Ph.D. in Distributed Systems. Led automation and data infrastructure scaling efforts at Stripe and Linear.",
+    name: "Evelyn Ross, P.Eng.",
+    role: "VP of Engineering & Design",
+    bio: "Ph.D. in Structural Engineering. Oversees all ANSI compliance, wind-load testing, and Revit BIM catalog developments.",
     avatar: "ER"
   },
   {
     name: "Marcus Vance",
-    role: "Head of Customer Experience",
-    bio: "Pioneered customer recovery models at Zendesk. Architect of Omega's omnichannel AI escalation loops.",
+    role: "Director of Field Services",
+    bio: "Factory certified AAADM inspector. Coordinates our emergency service fleet and preventive maintenance networks.",
     avatar: "MV"
   }
 ];
 
 const VALUES = [
   {
-    title: "Uncompromising Integrity",
-    desc: "We build secure, private-by-default pipelines. Your customer relationship is your most valuable asset.",
-    icon: <ShieldCheck className="h-5 w-5 text-indigo-400" />
+    title: "Engineering Precision",
+    desc: "We manufacture automatic doors using structural grade aluminum, heavy-duty guide tracks, and industrial controllers designed for millions of cycles.",
+    icon: <SettingsIcon />
   },
   {
-    title: "Velocity as a Product",
-    desc: "Speed prevents context rot. We design workflows to react within milliseconds, optimizing conversion touchpoints.",
-    icon: <Zap className="h-5 w-5 text-emerald-400" />
+    title: "Safety & Compliance First",
+    desc: "Every system we build is designed to comply with ANSI/BHMA A156.10/19 standards, UL listings, NFPA life safety, and ADA accessibility guidelines.",
+    icon: <ShieldCheck className="h-5 w-5 text-blue-900" />
   },
   {
-    title: "Obsessive Craftsmanship",
-    desc: "From API integrations to visual timelines, we ensure every detail is premium, accessible, and clean.",
-    icon: <Compass className="h-5 w-5 text-amber-400" />
+    title: "Service Excellence",
+    desc: "Omega doors are backed by a certified network of factory-trained service technicians, available 24/7/365 for inspections and maintenance.",
+    icon: <Compass className="h-5 w-5 text-blue-900" />
   }
 ];
 
+function SettingsIcon() {
+  return (
+    <svg className="h-5 w-5 text-blue-900 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  );
+}
+
 export default function AboutPage() {
   return (
-    <div className="relative overflow-hidden w-full py-16">
+    <div className="w-full bg-white text-slate-900 min-h-screen">
       
-      {/* Decorative Glow */}
-      <div className="absolute top-0 right-1/4 h-80 w-80 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none" />
-
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Our Story</span>
-          <h1 className="text-3xl sm:text-5xl font-black text-white mt-2 tracking-tight">
-            Pioneering the Future of Customer Operations
-          </h1>
-          <p className="text-zinc-400 text-sm mt-4 leading-relaxed">
-            Founded in 2024 in Toronto, Omega Automatics was born out of a simple frustration: customer experience platforms had become slow, complex, and isolated. We set out to design a unified, lightning-fast automation system that treats customer feedback as active operations.
+      {/* Banner */}
+      <section className="bg-slate-900 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left space-y-4">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-400">Omega Heritage</span>
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight uppercase">About Omega Automatics</h1>
+          <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+            Omega Automatics is a leading manufacturer of architectural entrance automation systems, designing heavy-duty sliding, swinging, and revolving entrances since 2001.
           </p>
         </div>
+      </section>
 
-        {/* Core Values Section */}
-        <div className="border-t border-zinc-900/60 pt-16 mb-20">
-          <h2 className="text-xl sm:text-2xl font-black text-white mb-8 text-center">Core Principles That Guide Us</h2>
+      {/* Corporate Overview */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        {/* Story */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-16">
+          <div className="lg:col-span-7 space-y-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Manufacturing Leaders</span>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight uppercase">Precision-Built Commercial Entrances</h2>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Founded in 2001, Omega Automatics operates from our primary manufacturing and assembly facility in Toronto. We engineering robust entrance systems that meet strict structural building codes and fire safety ratings. 
+            </p>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Our products are trusted across major infrastructure projects including hospital expansions, retail chains, airport terminals, and government headquarters, serving general contractors, architects, and facilities managers.
+            </p>
+          </div>
+          <div className="lg:col-span-5 bg-slate-50 border border-slate-200 p-6 rounded flex items-center gap-4">
+            <Building className="h-10 w-10 text-blue-900 shrink-0" />
+            <div>
+              <h4 className="text-xs font-bold text-slate-900 uppercase">Manufacturing Plant</h4>
+              <p className="text-[10px] text-slate-500 mt-1 leading-normal">
+                4500 Industrial Pkwy, Toronto, ON. Equipped with CNC machinery, custom glass glazing tracks, and an on-site ANSI cycle-testing laboratory.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Core Values */}
+        <div className="border-t border-slate-200 pt-16 mb-20">
+          <h3 className="text-base font-bold text-slate-900 uppercase tracking-tight text-center mb-12">Core Manufacturing Values</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {VALUES.map((val) => (
-              <div key={val.title} className="bg-zinc-900/30 border border-zinc-850 p-6 rounded-2xl">
-                <div className="h-10 w-10 bg-zinc-900 rounded-lg flex items-center justify-center mb-4 border border-zinc-800">
+              <div key={val.title} className="border border-slate-200 p-6 rounded bg-white hover:border-blue-900/20 hover:shadow-sm transition-all duration-300">
+                <div className="h-10 w-10 bg-slate-100 rounded flex items-center justify-center mb-4">
                   {val.icon}
                 </div>
-                <h3 className="text-sm font-bold text-white">{val.title}</h3>
-                <p className="text-xs text-zinc-500 mt-2 leading-relaxed">{val.desc}</p>
+                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">{val.title}</h4>
+                <p className="text-[11px] text-slate-500 mt-2 leading-relaxed">{val.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Leadership Section */}
-        <div className="border-t border-zinc-900/60 pt-16 mb-20">
+        {/* Leadership */}
+        <div className="border-t border-slate-200 pt-16 mb-20">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-xl sm:text-2xl font-black text-white">Executive Leadership</h2>
-            <p className="text-zinc-500 text-xs mt-2 leading-relaxed">
-              Led by seasoned SaaS operators, technology architects, and customer success pioneers.
+            <h3 className="text-base font-bold text-slate-900 uppercase tracking-tight">Executive Management</h3>
+            <p className="text-slate-500 text-xs mt-2 leading-relaxed">
+              Led by entrance manufacturing experts, registered professional engineers, and field technicians.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {LEADERS.map((leader) => (
-              <div key={leader.name} className="bg-zinc-900/30 border border-zinc-850 rounded-2xl overflow-hidden group">
-                <div className="h-44 bg-gradient-to-br from-indigo-950 to-zinc-900 flex items-center justify-center text-3xl font-black text-indigo-400 select-none group-hover:from-indigo-900 group-hover:to-zinc-850 transition-all duration-300">
+              <div key={leader.name} className="border border-slate-200 rounded overflow-hidden bg-white shadow-sm hover:border-blue-900/30 transition-all duration-300">
+                <div className="h-44 bg-slate-100 flex items-center justify-center text-3xl font-black text-blue-900 select-none">
                   {leader.avatar}
                 </div>
                 <div className="p-5">
-                  <h3 className="text-sm font-bold text-white">{leader.name}</h3>
-                  <span className="text-[10px] text-zinc-500 font-semibold block mt-0.5">{leader.role}</span>
-                  <p className="text-xs text-zinc-400 mt-3 leading-relaxed">{leader.bio}</p>
+                  <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">{leader.name}</h4>
+                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest block mt-0.5">{leader.role}</span>
+                  <p className="text-[11px] text-slate-500 mt-3 leading-relaxed">{leader.bio}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* CTA Banner */}
-        <div className="rounded-3xl border border-zinc-850 bg-gradient-to-br from-zinc-900/40 to-zinc-950 p-8 text-center mt-12 relative overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-56 w-56 bg-indigo-500/5 blur-3xl pointer-events-none" />
-          <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">Join Our Global Team</h2>
-          <p className="text-zinc-400 text-xs mt-2 max-w-md mx-auto leading-relaxed">
-            We are always looking for smart, ambitious engineers, designers, and support professionals to build next-generation CX systems.
+        {/* Careers CTA */}
+        <div className="border border-slate-200 rounded bg-slate-50 p-8 text-center mt-12">
+          <h2 className="text-lg font-bold text-slate-900 uppercase">Join Our Engineering Team</h2>
+          <p className="text-slate-500 text-xs mt-2 max-w-md mx-auto leading-relaxed">
+            We are always seeking certified AAADM technicians, mechanical engineers, and specifications experts.
           </p>
           <div className="mt-6">
             <Link
               href="/careers"
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-6 py-3 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs uppercase tracking-wider rounded transition-all shadow-sm cursor-pointer"
             >
               Browse Open Roles
               <ArrowRight className="h-3.5 w-3.5" />
@@ -125,7 +150,8 @@ export default function AboutPage() {
           </div>
         </div>
 
-      </div>
+      </section>
+
     </div>
   );
 }

@@ -6,12 +6,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/about",
     "/services",
-    "/solutions",
+    "/products",
     "/industries",
-    "/pricing",
-    "/case-studies",
-    "/testimonials",
-    "/blog",
+    "/projects",
+    "/resources",
     "/contact",
     "/careers",
     "/privacy",
@@ -21,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return routes.map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: route === "" || route === "/blog" ? "daily" : "weekly",
-    priority: route === "" ? 1.0 : route === "/pricing" || route === "/contact" ? 0.9 : 0.7,
+    changeFrequency: route === "" ? "daily" : "weekly",
+    priority: route === "" ? 1.0 : route === "/contact" || route === "/products" ? 0.9 : 0.7,
   }));
 }

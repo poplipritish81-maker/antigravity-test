@@ -17,18 +17,18 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     template: "%s | Omega Automatics",
-    default: "Omega Automatics | B2B Workflow Automation & Omni-Channel CX Platform",
+    default: "Omega Automatics | Commercial Automatic Doors & Entrance Automation",
   },
   description:
-    "Accelerate operations with Omega Automatics, the luxury enterprise SaaS B2B platform. Automate complex workflows, manage review reputation, and resolve omnichannel customer support requests effortlessly.",
+    "Omega Automatics designs, manufactures, and services premium commercial automatic sliding doors, swing door operators, and revolving door systems. Architectural-grade openings engineered for safety, compliance, and heavy pedestrian traffic.",
   metadataBase: new URL("https://www.omegaautomatics.com"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Omega Automatics | B2B Workflow Automation & Omni-Channel CX Platform",
+    title: "Omega Automatics | Commercial Automatic Doors & Entrance Automation",
     description:
-      "Accelerate operations with Omega Automatics, the luxury enterprise SaaS B2B platform. Automate complex workflows, manage review reputation, and resolve omnichannel customer support requests effortlessly.",
+      "Omega Automatics designs, manufactures, and services premium commercial automatic sliding doors, swing door operators, and revolving door systems.",
     url: "https://www.omegaautomatics.com",
     siteName: "Omega Automatics",
     locale: "en_US",
@@ -36,9 +36,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Omega Automatics | B2B Workflow Automation & Omni-Channel CX Platform",
+    title: "Omega Automatics | Commercial Automatic Doors & Entrance Automation",
     description:
-      "Accelerate operations with Omega Automatics, the luxury enterprise SaaS B2B platform. Automate complex workflows, manage review reputation, and resolve omnichannel customer support requests.",
+      "Omega Automatics designs, manufactures, and services premium commercial automatic sliding doors, swing door operators, and revolving door systems.",
   },
 };
 
@@ -50,16 +50,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full dark antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100 selection:bg-indigo-500/30 selection:text-white relative overflow-x-hidden">
-        {/* Global decorative background elements */}
-        <div className="absolute inset-0 bg-grid-pattern pointer-events-none opacity-70 z-0" />
-        <div className="absolute top-[-10%] left-[-10%] h-[600px] w-[600px] rounded-full bg-indigo-600/10 blur-3xl pointer-events-none z-0" />
-        <div className="absolute top-[20%] right-[-10%] h-[500px] w-[500px] rounded-full bg-violet-600/10 blur-3xl pointer-events-none z-0" />
-        <div className="absolute bottom-[10%] left-[20%] h-[600px] w-[600px] rounded-full bg-emerald-600/5 blur-3xl pointer-events-none z-0" />
-        
-        <div className="relative z-10 flex flex-col min-h-screen w-full">
+      <body className="min-h-full flex flex-col bg-white text-slate-900 selection:bg-blue-900/10 selection:text-blue-900">
+        <div className="relative flex flex-col min-h-screen w-full">
           <Navbar />
           <main id="main-content" className="flex-grow">
             {children}

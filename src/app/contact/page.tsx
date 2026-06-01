@@ -1,326 +1,246 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle2, Loader2, Calendar as CalendarIcon, Clock, Mail, MapPin, Phone } from "lucide-react";
-
-interface TimeSlot {
-  time: string;
-  available: boolean;
-}
-
-const DATES = [
-  { name: "Mon, Jun 8", value: "2026-06-08" },
-  { name: "Tue, Jun 9", value: "2026-06-09" },
-  { name: "Wed, Jun 10", value: "2026-06-10" }
-];
-
-const SLOTS: TimeSlot[] = [
-  { time: "10:00 AM EST", available: true },
-  { time: "11:30 AM EST", available: true },
-  { time: "2:00 PM EST", available: false },
-  { time: "3:30 PM EST", available: true }
-];
+import { CheckCircle2, Phone, Mail, MapPin, FileText } from "lucide-react";
 
 export default function ContactPage() {
-  // Contact Form State
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
+    firm: "",
     email: "",
-    company: "",
-    size: "1-10",
-    message: ""
+    phone: "",
+    role: "Architect / Specifier",
+    csi: "Section 08 42 29.23 (Sliding)",
+    projectLocation: "",
+    schedule: ""
   });
-  const [formStatus, setFormStatus] = useState<"idle" | "loading" | "success">("idle");
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success">("idle");
 
-  // Booking State
-  const [selectedDate, setSelectedDate] = useState(DATES[0].value);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [bookingStatus, setBookingStatus] = useState<"idle" | "loading" | "success">("idle");
-
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setFormStatus("loading");
-    setTimeout(() => {
-      setFormStatus("success");
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        company: "",
-        size: "1-10",
-        message: ""
-      });
-    }, 1500);
-  };
-
-  const handleBookDemo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedTime) return;
-    setBookingStatus("loading");
-    setTimeout(() => {
-      setBookingStatus("success");
-    }, 1500);
+    setSubmitStatus("success");
   };
 
   return (
-    <div className="relative overflow-hidden w-full py-16">
+    <div className="w-full bg-white text-slate-900 min-h-screen">
       
-      {/* Background decoration */}
-      <div className="absolute top-1/4 left-1/4 h-80 w-80 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none" />
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Contact Us</span>
-          <h1 className="text-3xl sm:text-5xl font-black text-white mt-2 tracking-tight">
-            Connect With Our Systems Architects
-          </h1>
-          <p className="text-zinc-400 text-sm mt-4 leading-relaxed">
-            Schedule a customized architecture advisory call or query our support desks. Let&apos;s design a high-throughput, fail-safe automation environment.
+      {/* Banner */}
+      <section className="bg-slate-900 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left space-y-4">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-400">Request Submittal</span>
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight uppercase">Contact Specifications Team</h1>
+          <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+            Request pricing estimates, product submittal files, custom CAD specifications, or schedule emergency preventive service technicians.
           </p>
         </div>
+      </section>
 
-        {/* Dual Layout: Form & Calendar */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
+      {/* Main Form Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
-          {/* Left Column: Contact Form */}
-          <div className="bg-zinc-900/30 border border-zinc-850 rounded-3xl p-6 sm:p-8 flex flex-col justify-between hover:border-zinc-800 transition-all duration-300">
-            <div>
-              <h2 className="text-base font-bold text-white mb-2">Send Us a Message</h2>
-              <p className="text-xs text-zinc-500 mb-6 leading-relaxed">
-                Have standard questions or integration queries? Fill out our form and our team will get back to you within 2 business hours.
-              </p>
+          {/* Left Column: Form */}
+          <div className="lg:col-span-8 bg-white border border-slate-200 p-6 sm:p-10 rounded shadow-sm">
+            <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight mb-2">Request Specification Bid</h2>
+            <p className="text-xs text-slate-500 mb-8">
+              Submit your architectural schedules or blueprints. Our engineering estimating team reviews details to deliver compliance-checked proposals in 24 hours.
+            </p>
 
-              {formStatus === "success" ? (
-                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 text-center flex flex-col items-center justify-center min-h-[300px]">
-                  <CheckCircle2 className="h-10 w-10 text-emerald-400 mb-4 animate-bounce" />
-                  <h3 className="text-sm font-bold text-white">Message Received Successfully!</h3>
-                  <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
-                    Thank you for reaching out. One of our solutions architects will contact you shortly.
-                  </p>
-                  <button
-                    onClick={() => setFormStatus("idle")}
-                    className="mt-6 text-xs text-indigo-400 hover:text-indigo-300 font-semibold cursor-pointer"
-                  >
-                    Send another message
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleFormSubmit} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="first-name" className="text-[10px] font-bold uppercase tracking-wider text-zinc-450">First Name</label>
-                      <input
-                        type="text"
-                        id="first-name"
-                        required
-                        value={formData.firstName}
-                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        className="bg-zinc-950 border border-zinc-850 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-600"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="last-name" className="text-[10px] font-bold uppercase tracking-wider text-zinc-450">Last Name</label>
-                      <input
-                        type="text"
-                        id="last-name"
-                        required
-                        value={formData.lastName}
-                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        className="bg-zinc-950 border border-zinc-850 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-600"
-                      />
-                    </div>
+            {submitStatus === "success" ? (
+              <div className="py-16 text-center space-y-4 bg-slate-50 border border-slate-200/60 rounded">
+                <CheckCircle2 className="h-12 w-12 text-emerald-600 mx-auto" />
+                <h3 className="text-base font-bold text-slate-900 uppercase">Specs Inquiry Received</h3>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                  Thank you for submitting your project specs. An Omega estimating engineer has been assigned and will contact you shortly with drawings.
+                </p>
+                <button
+                  onClick={() => setSubmitStatus("idle")}
+                  className="mt-4 text-xs font-bold text-blue-900 hover:text-blue-800 uppercase tracking-wider"
+                >
+                  Submit Another Project
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-slate-700 font-bold mb-1.5">First & Last Name</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Jane Smith"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white placeholder-slate-400"
+                    />
                   </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-slate-700 font-bold mb-1.5">Company / Firm Name</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Vanguard Contracting Corp"
+                      value={formData.firm}
+                      onChange={(e) => setFormData({ ...formData, firm: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white placeholder-slate-400"
+                    />
+                  </div>
+                </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-wider text-zinc-450">Work Email</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-slate-700 font-bold mb-1.5">Work Email</label>
                     <input
                       type="email"
-                      id="email"
                       required
+                      placeholder="j.smith@vanguard.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="bg-zinc-950 border border-zinc-850 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-600"
+                      className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white placeholder-slate-400"
                     />
                   </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="company" className="text-[10px] font-bold uppercase tracking-wider text-zinc-450">Company Name</label>
-                      <input
-                        type="text"
-                        id="company"
-                        required
-                        value={formData.company}
-                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        className="bg-zinc-950 border border-zinc-850 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-600"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="company-size" className="text-[10px] font-bold uppercase tracking-wider text-zinc-450">Company Size</label>
-                      <select
-                        id="company-size"
-                        value={formData.size}
-                        onChange={(e) => setFormData({ ...formData, size: e.target.value })}
-                        className="bg-zinc-950 border border-zinc-850 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-600 cursor-pointer"
-                      >
-                        <option value="1-10">1-10 employees</option>
-                        <option value="11-50">11-50 employees</option>
-                        <option value="51-200">51-200 employees</option>
-                        <option value="200+">200+ employees</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="message" className="text-[10px] font-bold uppercase tracking-wider text-zinc-450">Message / Requirements</label>
-                    <textarea
-                      id="message"
-                      rows={4}
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-slate-700 font-bold mb-1.5">Phone Number</label>
+                    <input
+                      type="text"
                       required
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      placeholder="Tell us about your pipeline integration goals..."
-                      className="bg-zinc-950 border border-zinc-850 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-600"
+                      placeholder="1-555-789-0122"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white placeholder-slate-400"
                     />
                   </div>
+                </div>
 
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-slate-700 font-bold mb-1.5">Professional Role</label>
+                    <select
+                      value={formData.role}
+                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2.5 text-xs text-slate-700 focus:outline-none focus:border-blue-900 focus:bg-white cursor-pointer"
+                    >
+                      <option>Architect / Specifier</option>
+                      <option>General Contractor</option>
+                      <option>Developer / Builder</option>
+                      <option>Facility Manager</option>
+                      <option>Sub-Contractor Glazier</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-slate-700 font-bold mb-1.5">Target CSI Section</label>
+                    <select
+                      value={formData.csi}
+                      onChange={(e) => setFormData({ ...formData, csi: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2.5 text-xs text-slate-700 focus:outline-none focus:border-blue-900 focus:bg-white cursor-pointer"
+                    >
+                      <option>Section 08 42 29.23 (Sliding Doors)</option>
+                      <option>Section 08 71 13 (Swing Operators)</option>
+                      <option>Section 08 42 33 (Revolving Doors)</option>
+                      <option>Section 08 42 36 (Telescopic Doors)</option>
+                      <option>Section 08 42 43 (ICU Hospital Doors)</option>
+                      <option>Custom Storefront / Glazing</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-wider text-slate-700 font-bold mb-1.5">Project Location City & State</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Memphis, TN"
+                    value={formData.projectLocation}
+                    onChange={(e) => setFormData({ ...formData, projectLocation: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white placeholder-slate-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-wider text-slate-700 font-bold mb-1.5">Door Schedule & Rough Openings Scope</label>
+                  <textarea
+                    rows={5}
+                    required
+                    placeholder="Provide details on rough openings, traffic estimates, fire-rating guidelines, or access control specifications..."
+                    value={formData.schedule}
+                    onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white placeholder-slate-400"
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
+                  <span className="text-[10px] text-slate-400">
+                    🔒 Certified Security: Blueprints and schedules are confidential.
+                  </span>
                   <button
                     type="submit"
-                    disabled={formStatus === "loading"}
-                    className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg py-2.5 text-xs font-semibold shadow-md active:translate-y-px transition-all disabled:opacity-50 flex items-center justify-center"
+                    className="px-6 py-3 bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold uppercase tracking-wider rounded transition-all shadow-sm shrink-0 cursor-pointer"
                   >
-                    {formStatus === "loading" ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      "Send Message"
-                    )}
-                  </button>
-                </form>
-              )}
-            </div>
-
-            {/* Corporate Location Details */}
-            <div className="border-t border-zinc-850/60 mt-8 pt-6 flex flex-wrap gap-4 text-xs text-zinc-500">
-              <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-indigo-500" /> Woodbridge, ON</span>
-              <span className="flex items-center gap-1.5"><Mail className="h-4 w-4 text-indigo-500" /> support@omega.com</span>
-              <span className="flex items-center gap-1.5"><Phone className="h-4 w-4 text-indigo-500" /> +1 (800) 555-OMEG</span>
-            </div>
-          </div>
-
-          {/* Right Column: Demo Scheduler */}
-          <div
-            id="book-demo"
-            className="bg-gradient-to-br from-zinc-900/60 to-zinc-950 border border-indigo-500/10 rounded-3xl p-6 sm:p-8 flex flex-col justify-between hover:border-indigo-500/20 transition-all duration-300 relative overflow-hidden"
-          >
-            <div>
-              <h2 className="text-base font-bold text-white mb-2 flex items-center gap-2">
-                <CalendarIcon className="h-5 w-5 text-indigo-400" />
-                Book an Advisory Session
-              </h2>
-              <p className="text-xs text-zinc-500 mb-6 leading-relaxed">
-                Choose a suitable date and time to map automation flows and review sentiment tools live with a senior solutions engineer.
-              </p>
-
-              {bookingStatus === "success" ? (
-                <div className="bg-indigo-500/15 border border-indigo-500/20 rounded-2xl p-6 text-center flex flex-col items-center justify-center min-h-[300px]">
-                  <CheckCircle2 className="h-10 w-10 text-indigo-400 mb-4 animate-bounce" />
-                  <h3 className="text-sm font-bold text-white">Advisory Session Booked!</h3>
-                  <p className="text-xs text-zinc-400 mt-2 leading-relaxed max-w-sm mx-auto">
-                    A confirmation calendar invite containing call link credentials has been dispatched to your email.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setBookingStatus("idle");
-                      setSelectedTime(null);
-                    }}
-                    className="mt-6 text-xs text-indigo-400 hover:text-indigo-300 font-semibold cursor-pointer"
-                  >
-                    Reschedule or Book Another Session
+                    Submit Specs for Estimator Review
                   </button>
                 </div>
-              ) : (
-                <form onSubmit={handleBookDemo} className="space-y-6">
-                  {/* Select Date */}
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-450 block mb-2.5">
-                      Select date (June 2026)
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {DATES.map((date) => (
-                        <button
-                          key={date.value}
-                          type="button"
-                          onClick={() => setSelectedDate(date.value)}
-                          className={`px-3 py-2 rounded-lg text-xs font-semibold border text-center cursor-pointer transition-all ${
-                            selectedDate === date.value
-                              ? "bg-indigo-600 border-indigo-500 text-white"
-                              : "bg-zinc-950 border-zinc-850 text-zinc-450 hover:text-white"
-                          }`}
-                        >
-                          {date.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+              </form>
+            )}
+          </div>
 
-                  {/* Select Timeslot */}
+          {/* Right Column: Contact Details */}
+          <div className="lg:col-span-4 space-y-6">
+            
+            {/* Quick Contacts */}
+            <div className="border border-slate-200 rounded p-6 bg-slate-50 space-y-4">
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Corporate Contacts</h4>
+              
+              <div className="space-y-3 font-semibold text-xs text-slate-600">
+                <div className="flex gap-2 items-start">
+                  <Phone className="h-4.5 w-4.5 text-blue-900 shrink-0" />
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-450 block mb-2.5">
-                      Available timeslots
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {SLOTS.map((slot) => (
-                        <button
-                          key={slot.time}
-                          type="button"
-                          disabled={!slot.available}
-                          onClick={() => setSelectedTime(slot.time)}
-                          className={`px-3 py-2.5 rounded-lg text-xs font-semibold border text-center transition-all ${
-                            !slot.available
-                              ? "bg-zinc-950 border-zinc-900/60 text-zinc-700 pointer-events-none"
-                              : selectedTime === slot.time
-                              ? "bg-indigo-600 border-indigo-500 text-white"
-                              : "bg-zinc-950 border-zinc-850 text-zinc-450 hover:text-white cursor-pointer"
-                          }`}
-                        >
-                          <span className="flex items-center justify-center gap-1.5">
-                            <Clock className="h-3.5 w-3.5" />
-                            {slot.time}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
+                    <span className="block text-slate-900 font-bold">Sales & Specifications Office</span>
+                    <span className="block text-[10px] text-slate-500 mt-0.5">1-800-555-OMEG (6634)</span>
+                    <span className="block text-[10px] text-slate-400">Mon-Fri, 8AM - 5PM EST</span>
                   </div>
+                </div>
 
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={!selectedTime || bookingStatus === "loading"}
-                    className="w-full bg-white text-zinc-950 hover:bg-zinc-200 disabled:opacity-40 rounded-lg py-2.5 text-xs font-bold shadow-md active:translate-y-px transition-all flex items-center justify-center"
-                  >
-                    {bookingStatus === "loading" ? (
-                      <Loader2 className="h-4 w-4 animate-spin text-zinc-950" />
-                    ) : (
-                      "Confirm Advisory Session"
-                    )}
-                  </button>
-                </form>
-              )}
+                <div className="flex gap-2 items-start border-t border-slate-200/60 pt-3">
+                  <Phone className="h-4.5 w-4.5 text-blue-900 shrink-0" />
+                  <div>
+                    <span className="block text-slate-900 font-bold">24/7 Dispatch Service Fleet</span>
+                    <span className="block text-[10px] text-slate-500 mt-0.5">1-800-555-SERV (7378)</span>
+                    <span className="block text-[10px] text-slate-400">Emergency dispatch for contract clients</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 items-start border-t border-slate-200/60 pt-3">
+                  <Mail className="h-4.5 w-4.5 text-blue-900 shrink-0" />
+                  <div>
+                    <span className="block text-slate-900 font-bold">Estimating Department</span>
+                    <span className="block text-[10px] text-slate-500 mt-0.5">specifications@omegaautomatics.com</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Guarantee badge */}
-            <div className="border-t border-zinc-900 mt-8 pt-6 text-[10px] text-zinc-500 flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              1-on-1 Session with a Senior Solutions Engineer
+            {/* Manufacturing HQ details */}
+            <div className="border border-slate-200 rounded p-6 bg-white space-y-3">
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                <MapPin className="h-4.5 w-4.5 text-blue-900" />
+                Manufacturing HQ
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Omega Automatics Inc.<br />
+                4500 Industrial Pkwy,<br />
+                Toronto, ON, Canada
+              </p>
+              <div className="text-[9px] text-slate-400 font-semibold uppercase pt-2 border-t border-slate-100 flex items-center gap-1.5">
+                <FileText className="h-4 w-4" />
+                Factory pickups: Loading Dock A
+              </div>
             </div>
+
           </div>
 
         </div>
+      </section>
 
-      </div>
     </div>
   );
 }
